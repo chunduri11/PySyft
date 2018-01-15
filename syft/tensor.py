@@ -376,6 +376,18 @@ class IntTensor(BaseTensor):
         else:
             return " - non-contiguous - "
 
+    def tan(self):
+        """
+        Returns the tangent of the input.
+        Parameters
+        ----------
+        Returns
+        -------
+        IntTensor
+            Output tensor
+        """
+        return self.no_params_func("tan", return_response=True)
+
 class FloatTensor(BaseTensor):
     def __init__(self, data, autograd=False, data_is_pointer=False, delete_after_use=False):
         self.controller = syft.controller
