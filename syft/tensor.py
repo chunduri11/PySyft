@@ -37,7 +37,6 @@ class BaseTensor():
             Output tensor
         """
         return self.arithmetic_operation(x, "add", False)
-
     def __iadd__(self, x):
         """
         Performs in place element-wise addition arithmetic between two tensors
@@ -281,6 +280,100 @@ class IntTensor(BaseTensor):
         """
         return self.no_params_func("abs", return_response=True)
 
+    def abs_(self):
+        """
+        Replaces tensor values with its absolute value
+        Parameters
+        ----------
+        Returns
+        -------
+        IntTensor
+            Output tensor
+        """
+        return self.no_params_func("abs_", return_response=True)
+
+    def cos(self):
+        """
+        Computes cos of each element of the tensor.
+        Parameters
+        ----------
+        Returns
+        -------
+        FloatTensor
+            Output Tensor
+        """
+        return self.no_params_func("cos", return_response=True, return_type='FloatTensor')
+
+    def lt(self, other):
+        """
+        Performs element-wise > comparison and returns 1 if the element
+        is less than a corresponding element in other Tensor, and 0 otherwise.
+        Returns a new Tensor with results of the comparison.
+
+        Parameters
+        __________
+        other: IntTensor to compare with
+
+        Returns
+        _________
+        IntTensor
+            Output tensor
+        """
+        return self.params_func("lt", [other.id], return_response=True)
+
+    def lt_(self, other):
+        """
+        Performs inline element-wise > comparison and returns 1 if the element
+        is less than a corresponding element in other Tensor, and 0 otherwise.
+
+        Parameters
+        __________
+        other: IntTensor to compare with
+
+        Returns
+        _________
+        IntTensor
+            Output tensor
+        """
+        return self.params_func("lt_", [other.id], return_response=True)
+
+    def equal(self, x):
+        """
+        Determines whether the given tensor has the same size and elements as this instance.
+
+        :param x: IntTensor
+        :return: True if the given tensor has the same size and elements as this instance. Otherwise, False.
+        """
+        response_string = self.params_func("equal", [x.id], return_response=True, return_type="str")
+        if response_string == "True":
+            return True
+        else:
+            return False
+
+    def neg(self):
+        """
+        Sets negative of the elements of tensor.
+        Parameters
+        ----------
+        Returns
+        -------
+        IntTensor
+            Output tensor
+        """
+        return self.no_params_func("neg", return_response=True)
+    
+    def neg_(self):
+        """
+        Sets negative of the elements of tensor inplace.
+        Parameters
+        ----------
+        Returns
+        -------
+        IntTensor
+            Caller with values inplace
+        """
+        return self.no_params_func("neg_")
+
     def shape(self):
         """
         Returns the size of the self tensor as a List.
@@ -292,6 +385,41 @@ class IntTensor(BaseTensor):
         """
         return list(np.fromstring(self.get("shape")[:-1], sep=",").astype('int'))
 
+    def sqrt(self):
+        """
+        Returns a new tensor with the square-root of the elements of input.
+        Parameters
+        ----------
+        Returns
+        -------
+        FloatTensor:
+            Output Tensor
+        """
+        return self.no_params_func("sqrt", return_response=True)
+
+    def reciprocal(self):
+        """
+        Computes the reciprocal of the input tensor.
+        ----------
+        Returns
+        -------
+        IntTensor:
+            Output Tensor
+        """
+        return self.no_params_func("reciprocal", return_response=True)
+    
+    def reciprocal_(self):
+        """
+        Computes reciprocal of input tensor with values inplace.
+        Parameters
+        ----------
+        Returns
+        -------
+        IntTensor
+            Caller with values inplace
+        """
+        return self.no_params_func("reciprocal_")
+      
     def trace(self):
         """
         Returns a new tensor with the sum along diagonals of a 2D tensor.
@@ -302,6 +430,18 @@ class IntTensor(BaseTensor):
         """
         return self.no_params_func("trace", return_response=True)
 
+    def sin(self):
+        """
+        Computes sin of each element of the tensor.
+        Parameters
+        ----------
+        Returns
+        -------
+        FloatTensor
+            Output Tensor
+        """
+        return self.no_params_func("sin", return_response=True, return_type='FloatTensor');
+      
     def __repr__(self, verbose=True):
 
         tensor_str = str(self.to_numpy())
@@ -315,6 +455,25 @@ class IntTensor(BaseTensor):
         desc = "[syft.IntTensor:"+str(self.id) + " size:" + type_str + "]" + "\n"
 
         return tensor_str + "\n" + desc
+
+    def T(self, dim1=None, dim2=None):
+        """
+        Returns a tensor that is a transposed version of input. The given dimensions dim1 and dim0 are swapped.
+        Parameters:
+
+            input (Tensor) – the input IntTensor
+            dim0 (int) – the first dimension to be transposed
+            dim1 (int) – the second dimension to be transposed
+        ----------
+        Returns
+        -------
+        IntTensor
+            Output tensor
+        """
+        if isinstance(dim1, int) and isinstance(dim2, int):
+            return self.params_func("transpose", [dim1, dim2], return_response=True)
+        else:
+            return self.no_params_func("transpose", return_response=True)
 
     def params_func(self, name, params, return_response=False, return_type='IntTensor'):
         # send the command
@@ -376,9 +535,15 @@ class IntTensor(BaseTensor):
         else:
             return " - non-contiguous - "
 
+<<<<<<< HEAD
     def tan(self):
         """
         Returns the tangent of the input.
+=======
+    def sign(self):
+        """
+        Computes sign of each element of the tensor.
+>>>>>>> upstream/master
         Parameters
         ----------
         Returns
@@ -386,10 +551,14 @@ class IntTensor(BaseTensor):
         IntTensor
             Output tensor
         """
+<<<<<<< HEAD
         return self.no_params_func("tan", return_response=True)
+=======
+        return self.no_params_func("sign", return_response=True)
+>>>>>>> upstream/master
 
 class FloatTensor(BaseTensor):
-    def __init__(self, data, autograd=False, data_is_pointer=False, delete_after_use=False):
+    def __init__(self, data, autograd=False, data_is_pointer=False, delete_after_use=True):
         self.controller = syft.controller
         self.delete_after_use = delete_after_use
         if (data is not None and not data_is_pointer):
@@ -852,6 +1021,7 @@ class FloatTensor(BaseTensor):
             Caller with values inplace
         """
         return self.no_params_func("floor_")
+
     def random_(self):
         """
         Returns a tensor filled with random numbers from a uniform distribution on the interval [0,1)
